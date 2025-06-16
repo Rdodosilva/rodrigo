@@ -6,24 +6,47 @@ import plotly.graph_objects as go
 # 🖥️ Configuração da Página
 # =============================
 st.set_page_config(
-    page_title="Dashboard - Coleta Centro",
+    page_title="🚛 Dashboard - Coleta Centro",
     page_icon="🚛",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # =============================
-# 🎨 Estilo Personalizado
+# 🎨 Estilo Customizado Futurista
 # =============================
 st.markdown(
     """
     <style>
-    body {
-        background-color: #0f0f0f;
-        color: #f0f0f0;
-    }
+    /* Fundo e fonte */
     .stApp {
-        background-color: #0f0f0f;
+        background-color: #0f0f1a;
+        color: #FFFFFF;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* Cartões Glass */
+    [data-testid="metric-container"] {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 15px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    [data-testid="stSidebar"] {
+        background-color: #141426;
+    }
+
+    /* Texto */
+    h1, h2, h3, h4 {
+        color: #00FFFF;
+    }
+
+    /* Títulos da sidebar */
+    .css-1d391kg {
+        color: #FFA500;
     }
     </style>
     """,
@@ -36,22 +59,20 @@ st.markdown(
 try:
     df = pd.read_excel("Coleta centro2.xlsx", sheet_name="Planilha1")
 
-    # Limpar espaços dos nomes das colunas
+    # Limpa espaços dos nomes das colunas
     df.columns = df.columns.str.strip()
 
-    # Verificar as colunas disponíveis
+    # Verifica as colunas disponíveis
     st.sidebar.subheader("🛠️ Colunas no arquivo:")
     st.sidebar.write(df.columns.tolist())
 
-    # Validar se existe a coluna 'Mês'
+    # Validação
     if "Mês" not in df.columns:
-        st.error("❌ A coluna 'Mês' não foi encontrada no arquivo Excel. Verifique se está correta.")
+        st.error("❌ A coluna 'Mês' não foi encontrada no Excel.")
         st.stop()
 
-    # Filtrar linhas com mês preenchido
     df = df[df["Mês"].notna()]
 
-    # Criar colunas de peso
     df["Peso AM (kg)"] = df["Coleta AM"] * 20
     df["Peso PM (kg)"] = df["Coleta PM"] * 20
     df["Peso Total (kg)"] = df["Total de Sacos"] * 20
@@ -84,7 +105,7 @@ peso_am = total_am * 20
 peso_pm = total_pm * 20
 
 # =============================
-# 🔥 Layout KPIs
+# 🚀 Layout KPIs
 # =============================
 st.title("🚛 Dashboard - Coleta Centro")
 
@@ -105,14 +126,14 @@ fig.add_trace(go.Bar(
     x=df_filtrado["Mês"],
     y=df_filtrado["Coleta AM"],
     name="Manhã (AM)",
-    marker_color="rgb(0, 123, 255)"
+    marker_color="#00FFFF"  # Azul Neon
 ))
 
 fig.add_trace(go.Bar(
     x=df_filtrado["Mês"],
     y=df_filtrado["Coleta PM"],
     name="Tarde (PM)",
-    marker_color="rgb(255, 140, 0)"
+    marker_color="#FFA500"  # Laranja Neon
 ))
 
 fig.update_layout(
@@ -121,15 +142,16 @@ fig.update_layout(
     xaxis_title="Mês",
     yaxis_title="Quantidade de Sacos",
     template="plotly_dark",
-    plot_bgcolor="#0f0f0f",
-    paper_bgcolor="#0f0f0f",
-    legend_title="Período"
+    plot_bgcolor="#0f0f1a",
+    paper_bgcolor="#0f0f1a",
+    font=dict(color="#FFFFFF"),
+    legend_title="Período",
 )
 
 st.plotly_chart(fig, use_container_width=True)
 
 # =============================
-# 📦 Gráfico - Peso Coletado
+# ⚖️ Gráfico - Peso Coletado
 # =============================
 fig_peso = go.Figure()
 
@@ -137,14 +159,14 @@ fig_peso.add_trace(go.Bar(
     x=df_filtrado["Mês"],
     y=df_filtrado["Peso AM (kg)"],
     name="Manhã (AM)",
-    marker_color="rgb(0, 123, 255)"
+    marker_color="#00FFFF"
 ))
 
 fig_peso.add_trace(go.Bar(
     x=df_filtrado["Mês"],
     y=df_filtrado["Peso PM (kg)"],
     name="Tarde (PM)",
-    marker_color="rgb(255, 140, 0)"
+    marker_color="#FFA500"
 ))
 
 fig_peso.update_layout(
@@ -153,8 +175,9 @@ fig_peso.update_layout(
     xaxis_title="Mês",
     yaxis_title="Peso (kg)",
     template="plotly_dark",
-    plot_bgcolor="#0f0f0f",
-    paper_bgcolor="#0f0f0f",
+    plot_bgcolor="#0f0f1a",
+    paper_bgcolor="#0f0f1a",
+    font=dict(color="#FFFFFF"),
     legend_title="Período"
 )
 
