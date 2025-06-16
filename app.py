@@ -23,9 +23,29 @@ st.markdown(
 st.title("🚛 Dashboard - Coleta Centro")
 
 file = "Coleta centro2.xlsx"
-df = pd.read_excel(file)
+# Carregando os dados
+df = pd.read_excel("Coleta centro2.xlsx", sheet_name="Planilha1")
 
+# Corrigir os nomes das colunas, eliminando espaços extras
 df.columns = df.columns.str.strip()
+
+# Verificar o nome correto da coluna
+st.sidebar.write("🛠️ Colunas encontradas no arquivo:", df.columns.tolist())
+
+# Filtrar apenas linhas que têm o mês preenchido
+df = df[df["Mês"].notna()]
+
+# Corrigir os nomes das colunas, se necessário
+df = df.rename(columns={
+    "Coleta AM": "Coleta AM",
+    "Coleta PM": "Coleta PM",
+    "Total de Sacos": "Total de Sacos"
+})
+
+# Adiciona coluna de peso
+df["Peso AM (kg)"] = df["Coleta AM"] * 20
+df["Peso PM (kg)"] = df["Coleta PM"] * 20
+df["Peso Total (kg)"] = df["Total de Sacos"] * 20
 
 df = df[df["Mês"].notna()]
 df = df[df["Mês"] != "Total"]
